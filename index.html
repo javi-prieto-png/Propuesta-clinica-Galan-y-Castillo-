@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>Propuesta Galán &amp; Castillo — {{TITULO_SERVICIO}}</title>
+
+<!--
+============================================================================
+  PLANTILLA MAESTRA DE PROPUESTAS — SAS
+  ---------------------------------------------------------------------------
+  Para adaptar a un cliente nuevo, busca y reemplaza estos campos {{...}}:
+
+  CLIENTE / SERVICIO
+    {{NOMBRE_CLINICA}}        Nombre de la clínica
+    {{TITULO_SERVICIO}}       Título del servicio que ofreces
+    {{SUBTITULO}}             Frase de beneficio bajo el título
+
+  SECCIÓN 1 — Por qué leer  (editable: problema y solución del cliente; 3er párrafo fijo)
+
+  SECCIÓN 2 — Precio y ROI
+    {{PRECIO_IMPLEMENTACION}} Ej: 1.300€
+    {{PRECIO_MENSUAL}}        Ej: 130€/mes
+    {{GANANCIA_NETA}}         Cifra grande (ej: 64.340€)
+    {{TIEMPO_RECUPERACION}}   Ej: 3 días
+    {{NUMEROS_SIMPLES}}       Texto del desglose de números
+
+  SECCIÓN 3 — Problemas (5 items)
+    {{PROBLEMA_1..5}}
+
+  SECCIÓN 4 — Solución (2 bloques)
+    {{SERVICIO_1_TITULO}} / {{SERVICIO_1_DESC}} / bullets
+    {{SERVICIO_2_TITULO}} / {{SERVICIO_2_DESC}} / bullets
+
+  SECCIÓN 5 — Plazos
+    {{FECHA_PROPUESTA}} {{FECHA_LIMITE}} {{FECHA_INICIO}} {{DURACION}} {{FECHA_FIN}}
+
+  SECCIÓN 6 — Incluido / No incluido (listas)
+
+  SECCIÓN 7 — FAQ (3 preguntas)
+
+  SECCIÓN 8 — Pago
+
+  SECCIÓN 9 — Firma
+    {{NOMBRE_CONSULTOR}} {{DNI}} {{CARGO}} {{CIUDAD}}
+============================================================================
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* ---- Paleta corporativa SAS (extraída del logo) ---- */
+    --indigo:#2D2A5E;        /* color principal del logo */
+    --indigo-deep:#1C1A40;   /* indigo oscuro / fondos */
+    --indigo-700:#3A3674;
+    --indigo-300:#7B77B8;    /* acento claro */
+    --indigo-100:#E9E8F4;    /* fondos suaves */
+    --ink:#16142E;           /* texto principal */
+    --slate:#5A5870;         /* texto secundario */
+    --bg:#FFFFFF;
+    --bg-soft:#F6F6FB;
+    --line:#E4E3EF;
+    --ok:#1E9E6A;
+    --warn:#C28A1A;
+    --shadow:0 18px 50px -20px rgba(28,26,64,.35);
+    --radius:18px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Manrope',system-ui,sans-serif;
+    color:var(--ink);
+    background:var(--bg);
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:880px;margin:0 auto;padding:0 24px}
+
+  /* ---------------- LOGO SAS (recreado en SVG/CSS) ---------------- */
+  .sas-logo{display:inline-flex;flex-direction:column;align-items:center;gap:2px;line-height:1}
+  .sas-logo .mark{
+    font-family:'Comfortaa',sans-serif;font-weight:700;letter-spacing:-.02em;
+    color:var(--logo-color,var(--indigo));
+  }
+  .sas-logo svg{display:block}
+
+  /* ---- Co-branding (logo cliente + logo SAS) ---- */
+  .cobrand{display:flex;align-items:center;justify-content:center;gap:30px;flex-wrap:wrap}
+  .cobrand .sep{width:1px;height:88px;background:rgba(255,255,255,.22)}
+  .gc-logo{display:flex;flex-direction:column;align-items:center;gap:12px}
+  .gc-logo .tile{
+    background:#5A6680;border-radius:18px;padding:14px 18px 10px;
+    display:flex;flex-direction:column;align-items:center;
+  }
+  .gc-logo .tile svg{display:block}
+  .gc-logo .name{
+    font-size:13px;font-weight:700;letter-spacing:.18em;color:#fff;text-transform:uppercase;
+  }
+  .cobrand .by{font-size:12px;color:#8F8CC0;font-weight:600;letter-spacing:.05em;margin-bottom:8px}
+  .cobrand .unit{display:flex;flex-direction:column;align-items:center}
+  @media(max-width:520px){.cobrand .sep{width:88px;height:1px}}
+
+  /* ---------------- HERO ---------------- */
+  .hero{
+    min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;
+    background:radial-gradient(120% 90% at 50% 0%, #26234f 0%, var(--indigo-deep) 55%, #0d0c22 100%);
+    color:#fff;padding:64px 24px;position:relative;
+  }
+  .hero .sas-logo .mark{font-size:64px;--logo-color:#fff}
+  .hero .smile path{stroke:#fff}
+  .hero .eyebrow{
+    margin-top:34px;font-size:13px;letter-spacing:.32em;text-transform:uppercase;
+    color:var(--indigo-300);font-weight:700;
+  }
+  .hero h1{
+    font-size:clamp(34px,6vw,60px);font-weight:800;letter-spacing:-.02em;margin-top:14px;line-height:1.05;
+  }
+  .hero .sub{margin-top:18px;font-size:clamp(16px,2.4vw,20px);color:#C9C7E4;max-width:560px}
+  .scroll-hint{position:absolute;bottom:34px;font-size:13px;color:#8F8CC0;letter-spacing:.05em;animation:bob 2s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
+
+  /* ---------------- SECCIONES ---------------- */
+  section.block{padding:88px 0;border-bottom:1px solid var(--line)}
+  section.block.soft{background:var(--bg-soft)}
+  .num{
+    display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:50%;
+    background:var(--indigo);color:#fff;font-weight:800;font-size:18px;margin-bottom:22px;
+    box-shadow:var(--shadow);
+  }
+  h2{font-size:clamp(26px,4vw,38px);font-weight:800;letter-spacing:-.02em;line-height:1.15;margin-bottom:22px}
+  h3{font-size:21px;font-weight:700;margin:8px 0 12px;color:var(--indigo)}
+  p{margin-bottom:16px;color:var(--slate);font-size:17px}
+  p strong,li strong{color:var(--ink)}
+  .lead{font-size:19px;color:var(--ink)}
+
+  /* .edit: marca interna de campo editable (sin resaltado visible) */
+  .edit{}
+
+  /* ---------------- PRECIO ---------------- */
+  .price-table{width:100%;border-collapse:collapse;margin:8px 0 36px;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+  .price-table td{padding:20px 24px;border-bottom:1px solid var(--line);font-size:18px}
+  .price-table tr:last-child td{border-bottom:none}
+  .price-table td:first-child{font-weight:600;color:var(--ink)}
+  .price-table td:last-child{text-align:right;font-weight:800;color:var(--indigo);font-size:20px;white-space:nowrap}
+  .price-table .was{color:var(--slate);text-decoration:line-through;font-weight:600;font-size:16px;margin-right:10px;opacity:.65}
+  .price-table .now{color:var(--indigo);font-weight:800;font-size:22px}
+  .badge-sas{display:inline-block;background:var(--indigo);color:#fff;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;border-radius:999px;margin-bottom:14px}
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:0 0 30px}
+  .stat{background:var(--indigo-deep);color:#fff;border-radius:var(--radius);padding:30px 26px;text-align:center}
+  .stat .big{font-size:clamp(34px,6vw,52px);font-weight:800;letter-spacing:-.02em;color:#fff;line-height:1}
+  .stat .cap{margin-top:10px;font-size:14px;color:var(--indigo-300);font-weight:600}
+  .callout{background:var(--indigo-100);border-left:4px solid var(--indigo);border-radius:0 12px 12px 0;padding:20px 24px;margin-top:10px}
+  .callout p:last-child{margin-bottom:0}
+
+  /* ---------------- LISTAS ---------------- */
+  ul.clean{list-style:none;margin:8px 0}
+  ul.clean li{position:relative;padding:12px 0 12px 34px;border-bottom:1px solid var(--line);font-size:16.5px;color:var(--ink)}
+  ul.clean li:last-child{border-bottom:none}
+  ul.clean li::before{content:"";position:absolute;left:4px;top:19px;width:9px;height:9px;border-radius:50%;background:var(--indigo)}
+  ul.arrow li::before{content:"→";background:none;color:var(--indigo);font-weight:800;top:11px;left:0;width:auto;height:auto}
+
+  /* ---------------- SOLUCIÓN ---------------- */
+  .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:30px;margin-bottom:24px;box-shadow:var(--shadow)}
+  .card .tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--indigo-300);margin-bottom:6px}
+
+  /* ---------------- PLAZOS ---------------- */
+  .timeline{display:grid;gap:14px}
+  .timeline .row{display:flex;gap:16px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 22px}
+  .timeline .row .k{font-weight:700;color:var(--indigo);min-width:210px}
+  .timeline .row .v{color:var(--ink);font-weight:600}
+
+  /* ---------------- INCLUIDO / NO ---------------- */
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .cols .pane{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:26px}
+  .pane h3{display:flex;align-items:center;gap:8px}
+  .pane.yes h3{color:var(--ok)}
+  .pane.no h3{color:var(--slate)}
+  .pane ul{list-style:none}
+  .pane li{padding:10px 0;border-bottom:1px solid var(--line);font-size:15.5px;color:var(--ink)}
+  .pane li:last-child{border-bottom:none}
+  .pane li small{display:block;color:var(--slate);font-size:13px;margin-top:3px}
+
+  /* ---------------- FAQ ---------------- */
+  details{background:#fff;border:1px solid var(--line);border-radius:14px;padding:0;margin-bottom:12px;overflow:hidden}
+  details summary{cursor:pointer;padding:20px 24px;font-weight:700;color:var(--ink);font-size:17px;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px}
+  details summary::-webkit-details-marker{display:none}
+  details summary::after{content:"+";color:var(--indigo);font-size:24px;font-weight:700;transition:transform .2s}
+  details[open] summary::after{transform:rotate(45deg)}
+  details .answer{padding:0 24px 22px;color:var(--slate);font-size:16px}
+
+  /* ---------------- FIRMA ---------------- */
+  .sign{background:var(--indigo-deep);color:#fff;border-radius:var(--radius);padding:40px;margin-top:30px}
+  .sign .name{font-size:24px;font-weight:800;margin-bottom:6px}
+  .sign p{color:#C9C7E4}
+  .sign .pledge{margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,.15);font-size:14px;color:#A9A6CE}
+
+  footer{text-align:center;padding:40px 24px;color:var(--slate);font-size:13px}
+
+  /* ---------------- NAV DOTS ---------------- */
+  .dots{position:fixed;right:18px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:11px;z-index:50}
+  .dots a{width:10px;height:10px;border-radius:50%;background:#CFCEE0;transition:.2s}
+  .dots a:hover{background:var(--indigo);transform:scale(1.3)}
+
+  @media(max-width:680px){
+    .stats,.cols{grid-template-columns:1fr}
+    .timeline .row{flex-direction:column;gap:4px}
+    .timeline .row .k{min-width:0}
+    .dots{display:none}
+    section.block{padding:64px 0}
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV DOTS -->
+<nav class="dots" aria-hidden="true">
+  <a href="#s1" title="Por qué leer"></a>
+  <a href="#s2" title="Precio y ROI"></a>
+  <a href="#s3" title="Qué resolvemos"></a>
+  <a href="#s4" title="La solución"></a>
+  <a href="#s5" title="Plazos"></a>
+  <a href="#s6" title="Incluido"></a>
+  <a href="#s7" title="FAQ"></a>
+  <a href="#s8" title="Pago"></a>
+  <a href="#s9" title="Próximos pasos"></a>
+</nav>
+
+<!-- ============== HERO ============== -->
+<header class="hero">
+  <!-- LOCKUP CO-BRANDING: logo cliente (Galán & Castillo) + logo SAS -->
+  <div class="cobrand">
+    <!-- LOGO CLIENTE -->
+    <div class="unit">
+      <span class="by">Para</span>
+      <div class="gc-logo">
+        <div class="tile">
+          <svg width="150" height="118" viewBox="0 20 230 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- G: anillo casi cerrado + barra a las 3 -->
+            <path d="M139.1 85.3 A56 56 0 1 1 120 52.1" stroke="#fff" stroke-width="17" stroke-linecap="round" fill="none"/>
+            <path d="M140 95 L108 95" stroke="#fff" stroke-width="17" stroke-linecap="round" fill="none"/>
+            <!-- C: abierta a la derecha -->
+            <path d="M170.9 131 A56 56 0 1 1 170.9 59" stroke="#fff" stroke-width="17" stroke-linecap="round" fill="none"/>
+          </svg>
+        </div>
+        <span class="name">Galán &amp; Castillo</span>
+      </div>
+    </div>
+
+    <span class="sep"></span>
+
+    <!-- LOGO SAS -->
+    <div class="unit">
+      <span class="by">Por</span>
+      <div class="sas-logo" style="color:#fff">
+        <svg width="150" viewBox="0 0 330 205" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g stroke="currentColor" stroke-width="18" stroke-linecap="round" fill="none">
+            <path d="M78,53 C78,37 12,37 12,61 C12,81 78,69 78,93 C78,117 12,117 12,99"/>
+            <circle cx="165" cy="75" r="40"/>
+            <path d="M205,35 L205,115"/>
+            <path d="M316,53 C316,37 250,37 250,61 C250,81 316,69 316,93 C316,117 250,117 250,99"/>
+          </g>
+          <path d="M48,158 C120,205 210,205 282,158" stroke="currentColor" stroke-width="17" stroke-linecap="round" fill="none"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="eyebrow">Propuesta Comercial</div>
+  <h1>Agente de WhatsApp con IA</h1>
+  <p class="sub">Atiende a tus pacientes y gestiona toda tu agenda de forma automática, 24/7</p>
+  <div class="scroll-hint">↓ Desplázate para ver los detalles</div>
+</header>
+
+<!-- ============== 1. POR QUÉ LEER ============== -->
+<section class="block" id="s1">
+  <div class="wrap">
+    <span class="num">1</span>
+    <h2>Por qué debes leer este presupuesto</h2>
+    <p class="lead edit"><strong>Vimos y escuchamos el problema en tu clínica:</strong> tu equipo pierde unas <strong>3 horas cada día</strong> atendiendo el WhatsApp — respondiendo dudas sobre la clínica, consultando disponibilidad y agendando, cancelando o reprogramando citas. Son 3 horas diarias que no se dedican a las tareas más importantes de la clínica.</p>
+    <p class="edit">Esta propuesta no es solo un presupuesto técnico. Es una <strong>hoja de ruta para recuperar ese tiempo</strong>: un agente inteligente que responde cualquier duda de tus pacientes y gestiona toda tu agenda de forma automática —citas nuevas, cancelaciones y cambios— sin que tu equipo tenga que estar pendiente del móvil.</p>
+    <p>Aunque al final decidas no colaborar con nosotros, esta propuesta tiene valor: es exactamente qué va a pasar, cómo, cuándo, y cuánto vas a ganar.</p>
+  </div>
+</section>
+
+<!-- ============== 2. PRECIO Y ROI ============== -->
+<section class="block soft" id="s2">
+  <div class="wrap">
+    <span class="num">2</span>
+    <h2>Precio y retorno</h2>
+    <p>Sabemos que lo primero que todos miramos en una propuesta es el precio. Aquí está claro y sin sorpresas:</p>
+    <span class="badge-sas">Precio especial · Cliente método SAS</span>
+    <table class="price-table">
+      <tr><td>Implementación (única vez)</td><td><span class="was">3.500€</span><span class="now">2.000€</span></td></tr>
+      <tr><td>Mantenimiento mensual</td><td><span class="was">250€</span><span class="now">200€/mes</span></td></tr>
+    </table>
+    <div class="stats">
+      <div class="stat"><div class="big">18 h</div><div class="cap">Tiempo que recupera tu equipo<br>cada semana</div></div>
+      <div class="stat"><div class="big">~900 h</div><div class="cap">Recuperadas al año<br>(+110 jornadas laborales)</div></div>
+    </div>
+    <div class="callout">
+      <p><strong>En números simples:</strong></p>
+      <p>Como cliente del método SAS accedes a un precio especial: la implementación baja de <strong>3.500€ a 2.000€</strong> y el mantenimiento de <strong>250€ a 200€/mes</strong>.</p>
+      <p>A cambio, tu equipo deja de perder 3 horas al día en el WhatsApp: <strong>18 horas cada semana</strong> y cerca de <strong>900 horas al año</strong> —más de 110 jornadas laborales completas— que tu equipo puede dedicar a las tareas más importantes de la clínica.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 3. QUÉ RESOLVEMOS ============== -->
+<section class="block" id="s3">
+  <div class="wrap">
+    <span class="num">3</span>
+    <h2>¿Qué vamos a resolver?</h2>
+    <p>Lo que nos contaste en la reunión fue clarísimo. Estos son los problemas exactos que vamos a resolver:</p>
+    <ul class="clean arrow">
+      <li><strong>3 horas al día perdidas en WhatsApp:</strong> tu equipo responde a mano cada mensaje en lugar de dedicarse a lo importante.</li>
+      <li><strong>Dudas repetitivas sin fin:</strong> horarios, ubicación, servicios, precios y preparación de citas… las mismas preguntas una y otra vez.</li>
+      <li><strong>Gestión manual de la agenda:</strong> consultar huecos, agendar, cancelar y reagendar a mano en Vevi Care consume tiempo y genera errores.</li>
+      <li><strong>Respuestas lentas o fuera de horario:</strong> pacientes que escriben por la noche o en hora punta esperan… y a veces se van a otra clínica.</li>
+      <li><strong>Equipo saturado:</strong> el móvil interrumpe constantemente y resta foco a las tareas más importantes de la clínica.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============== 4. LA SOLUCIÓN ============== -->
+<section class="block soft" id="s4">
+  <div class="wrap">
+    <span class="num">4</span>
+    <h2>Lo que vamos a hacer por ti</h2>
+
+    <div class="card">
+      <span class="tag">Agente IA + n8n + WhatsApp</span>
+      <h3>Agente de WhatsApp con IA integrado con Vevi Care</h3>
+      <p>Un agente inteligente conectado a tu WhatsApp que entiende lo que escriben tus pacientes, responde al instante cualquier duda sobre la clínica y gestiona la agenda directamente en Vevi Care —consultar disponibilidad, agendar, cancelar y reagendar— sin que tu equipo tenga que intervenir.</p>
+      <ul class="clean">
+        <li><strong>Respuestas 24/7 al instante:</strong> horarios, servicios, precios, ubicación y preparación de citas, sin esperas ni dejar mensajes sin contestar.</li>
+        <li><strong>Gestión completa de la agenda:</strong> consulta huecos libres y agenda, cancela o reagenda citas directamente en Vevi Care.</li>
+        <li><strong>Integración con Vevi Care:</strong> lee y escribe en tu agenda en tiempo real, sin duplicar trabajo ni introducir datos a mano.</li>
+        <li><strong>Conversación natural:</strong> la IA entiende el lenguaje del paciente y mantiene el tono y la información de tu clínica.</li>
+        <li><strong>Escala sin saturar:</strong> atiende muchas conversaciones a la vez sin perder cercanía ni hacer esperar a ningún paciente.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <span class="tag">Registro y control</span>
+      <h3>Registro de conversaciones y resumen de actividad</h3>
+      <p>El agente trabaja solo y tú mantienes el control total: cada conversación y cada gestión de cita queda registrada, con trazabilidad completa y un resumen claro de todo lo que hace por ti.</p>
+      <ul class="clean">
+        <li><strong>Historial centralizado:</strong> todas las conversaciones y citas gestionadas quedan registradas y consultables.</li>
+        <li><strong>Resumen de actividad:</strong> dudas resueltas y citas agendadas, canceladas o reagendadas por el agente.</li>
+        <li><strong>Mejora continua:</strong> afinamos las respuestas del agente con los casos reales para que cada vez sea más natural y preciso.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 5. PLAZOS ============== -->
+<section class="block" id="s5">
+  <div class="wrap">
+    <span class="num">5</span>
+    <h2>Plazos de inicio y desarrollo</h2>
+    <div class="timeline">
+      <div class="row"><span class="k">📅 Fecha de propuesta</span><span class="v edit">Lunes 8 de junio de 2026</span></div>
+      <div class="row"><span class="k">📅 Fecha límite de aprobación</span><span class="v edit">Viernes 12 de junio de 2026</span></div>
+      <div class="row"><span class="k">🚀 Inicio de implementación</span><span class="v edit">A convenir</span></div>
+      <div class="row"><span class="k">⏱ Duración estimada</span><span class="v edit">3 meses</span></div>
+      <div class="row"><span class="k">✅ Sistema listo y funcionando</span><span class="v edit">Aproximadamente 3 meses desde el inicio</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 6. INCLUIDO / NO ============== -->
+<section class="block soft" id="s6">
+  <div class="wrap">
+    <span class="num">6</span>
+    <h2>Qué está incluido y qué no</h2>
+    <div class="cols">
+      <div class="pane yes">
+        <h3>✓ Incluido en tu inversión</h3>
+        <ul>
+          <li>Reunión inicial de arranque y discovery técnico</li>
+          <li>Setup integración Vevi Care + WhatsApp Business API + agente IA</li>
+          <li>Construcción del workflow n8n completo</li>
+          <li>Entrenamiento del agente con la información de tu clínica</li>
+          <li>Testing exhaustivo: conversaciones y gestión completa de la agenda</li>
+          <li>Entrenamiento de tu equipo (1 sesión)</li>
+          <li>Documentación técnica</li>
+          <li>Soporte para dudas por WhatsApp durante los 3 primeros meses</li>
+          <li>Optimizaciones mensuales (plan de mantenimiento)</li>
+          <li>Una vez montado el sistema, arranca el servicio de mantenimiento mensual, que incluye una reunión mensual y soporte por WhatsApp en horario laboral (9:00–18:00)</li>
+        </ul>
+      </div>
+      <div class="pane no">
+        <h3>× No incluido (cliente responsable)</h3>
+        <ul>
+          <li>Herramientas para desarrolladores de Vevi Care <small>⚠ El cliente debe solicitarlas en Vevi Care; el coste corre por su cuenta</small></li>
+          <li>Cuenta de Hostinger para alojar n8n y Chatwoot <small>⚠ Coste mensual a cargo del cliente</small></li>
+          <li>Cuenta de Redis y de Supabase <small>✓ Ambas gratuitas</small></li>
+          <li>WhatsApp Business API (Meta) <small>⚠ Coste por conversación; lo paga el cliente directamente a Meta según volumen</small></li>
+          <li>Cuenta de ChatGPT Pro <small>⚠ Suscripción mensual a cargo del cliente</small></li>
+          <li>Método de pago en la plataforma de OpenAI <small>⚠ Necesario para el consumo de la API; el coste corre por cuenta del cliente según volumen</small></li>
+          <li>Número y tarjeta SIM de WhatsApp dedicado <small>⚠ El cliente lo adquiere</small></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 7. FAQ ============== -->
+<section class="block" id="s7">
+  <div class="wrap">
+    <span class="num">7</span>
+    <h2>Preguntas frecuentes</h2>
+    <details open>
+      <summary>¿El agente suena natural o se nota que es automático?</summary>
+      <div class="answer">Está diseñado para conversar de forma natural y cercana, con el tono y la información de tu clínica, de modo que la experiencia del paciente sea fluida. Durante los 3 meses de soporte afinamos sus respuestas con los casos reales para que cada vez sea mejor.</div>
+    </details>
+    <details>
+      <summary>¿Es seguro dejar que gestione la agenda en Vevi Care?</summary>
+      <div class="answer">Sí. El agente trabaja sobre tu agenda con reglas claras (horarios, duración de citas, huecos válidos) y pasa por un testing exhaustivo antes de salir en vivo. En casos sensibles confirma siempre con el paciente antes de actuar.</div>
+    </details>
+    <details>
+      <summary>¿Podemos ampliar a Instagram, web u otras funciones más adelante?</summary>
+      <div class="answer">Por supuesto. Empezamos por WhatsApp y, cuando quieras, añadimos otros canales o funciones (recordatorios, encuestas de satisfacción, etc.). Las nuevas features se cotizan por horas o se incluyen en un plan de mantenimiento ampliado.</div>
+    </details>
+  </div>
+</section>
+
+<!-- ============== 8. PAGO ============== -->
+<section class="block soft" id="s8">
+  <div class="wrap">
+    <span class="num">8</span>
+    <h2>Cómo pagamos</h2>
+    <p><strong>Sistema de pago:</strong> una vez confirmada la propuesta, te enviamos nuestros datos. El pago se realiza por transferencia bancaria o tarjeta.</p>
+    <p><strong>Estructura:</strong> 2.000€ de implementación al inicio (para agendar y arrancar el proyecto). Luego, 200€/mes de mantenimiento desde el mes de inicio, con una permanencia mínima de un año. A partir del primer año, el cliente puede cancelar cuando quiera.</p>
+    <p><strong>Concepto en la transferencia:</strong> "Implementación agente WhatsApp IA — Galán &amp; Castillo"</p>
+  </div>
+</section>
+
+<!-- ============== 9. PRÓXIMOS PASOS + FIRMA ============== -->
+<section class="block" id="s9">
+  <div class="wrap">
+    <span class="num">9</span>
+    <h2>Próximos pasos</h2>
+    <p>Esto es lo que proponemos que hagamos ahora:</p>
+    <ul class="clean">
+      <li><strong>1.</strong> Confirmar por escrito la aceptación de la propuesta.</li>
+      <li><strong>2.</strong> Firmar el contrato: una vez aceptada la propuesta, te enviamos el contrato con las condiciones del servicio para formalizar el acuerdo.</li>
+      <li><strong>3.</strong> Realizar el primer pago de 2.000€ para empezar con la implementación.</li>
+      <li><strong>4.</strong> Reunión de onboarding: una vez aceptada la propuesta, nos reunimos para arrancar el proyecto y empezar a crear todas las cuentas y accesos necesarios para el cliente (WhatsApp, n8n, integraciones, etc.).</li>
+    </ul>
+    <p>Si surge cualquier duda o quieres ajustar algún punto, estamos a una respuesta de distancia. Gracias por tu confianza.</p>
+
+    <div class="sign">
+      <p><strong>Un abrazo,</strong></p>
+      <div class="name">Javier Prieto</div>
+      <p>Consultor de IA<br>Smart Aligner Services</p>
+      <div class="pledge">
+        <strong>Compromiso:</strong> Por la presente, Smart Aligner Services se compromete a realizar con profesionalidad y dedicación todos los servicios técnicos detallados en esta propuesta.
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="sas-logo" style="color:var(--indigo)">
+    <svg width="78" viewBox="0 0 330 205" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g stroke="currentColor" stroke-width="18" stroke-linecap="round" fill="none">
+        <path d="M78,53 C78,37 12,37 12,61 C12,81 78,69 78,93 C78,117 12,117 12,99"/>
+        <circle cx="165" cy="75" r="40"/>
+        <path d="M205,35 L205,115"/>
+        <path d="M316,53 C316,37 250,37 250,61 C250,81 316,69 316,93 C316,117 250,117 250,99"/>
+      </g>
+      <path d="M48,158 C120,205 210,205 282,158" stroke="currentColor" stroke-width="17" stroke-linecap="round" fill="none"/>
+    </svg>
+  </div>
+  <p style="margin-top:16px"><strong>Confidencialidad:</strong> esta propuesta es confidencial y está preparada específicamente para <strong>Galán &amp; Castillo</strong>. No puede ser compartida, copiada o distribuida sin consentimiento expreso.</p>
+</footer>
+
+</body>
+</html>
